@@ -1,22 +1,8 @@
-name: CI/CD Pipeline
+- name: Run Container
+  run: docker run -d -p 5000:5000 cicd-app
 
-on:
-  push:
-    branches: [ "main" ]
+- name: Wait for App
+  run: sleep 5
 
-jobs:
-  build-and-run:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout Code
-      uses: actions/checkout@v3
-
-    - name: Build Docker Image
-      run: docker build -t cicd-app -f docker/Dockerfile .
-
-    - name: Run Container
-      run: docker run -d -p 5000:5000 cicd-app
-
-    - name: Test Application
-      run: curl http://localhost:5000
+- name: Test Application
+  run: curl http://localhost:5000
