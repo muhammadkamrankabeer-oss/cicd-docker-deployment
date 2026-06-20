@@ -1,165 +1,248 @@
-# 🚀 CI/CD Docker Deployment
+# 🚀 CI/CD Docker Deployment Platform
 
-A hands-on DevOps lab demonstrating a complete **CI/CD pipeline** for a containerized Python (Flask) application — from local Vagrant provisioning, through automated testing in GitHub Actions, to a multi-stage Docker build pushed straight to Docker Hub.
+A production-inspired DevSecOps project demonstrating automated code quality validation, security scanning, testing, and container image building using GitHub Actions, Docker, Python Flask, and Vagrant.
 
-<p>
-  <img src="https://img.shields.io/badge/Python-3.10-blue?logo=python&logoColor=white" alt="Python">
-  <img src="https://img.shields.io/badge/Flask-Web%20App-black?logo=flask&logoColor=white" alt="Flask">
-  <img src="https://img.shields.io/badge/Docker-Multi--stage%20Build-2496ED?logo=docker&logoColor=white" alt="Docker">
-  <img src="https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF?logo=githubactions&logoColor=white" alt="GitHub Actions">
-  <img src="https://img.shields.io/badge/Tested%20with-Pytest-0A9EDC?logo=pytest&logoColor=white" alt="Pytest">
-  <img src="https://img.shields.io/badge/Provisioned%20with-Vagrant-1868F2?logo=vagrant&logoColor=white" alt="Vagrant">
-</p>
+## 📌 Project Overview
+
+This repository showcases a complete CI/CD workflow for a containerized Flask application running inside a reproducible Debian-based Vagrant environment. The pipeline enforces code quality, performs security scanning, executes automated tests, and validates Docker image builds before delivery.
+
+### Key Highlights
+
+- Automated CI pipeline using GitHub Actions
+- DevSecOps security scanning with Trivy
+- Code quality enforcement using Black and Flake8
+- Automated testing with Pytest
+- Multi-stage Docker builds
+- Non-root container execution
+- Docker HEALTHCHECK support
+- Reproducible infrastructure with Vagrant
+- Architecture and interview-preparation documentation
 
 ---
 
-## 📐 Architecture
+## 🏗️ Architecture
 
-```
- Developer Machine                GitHub                         Docker Hub
-┌──────────────────┐      ┌─────────────────────┐          ┌──────────────────┐
-│  Vagrant VM       │      │  GitHub Actions CI  │          │                  │
-│  (Debian 12)      │ push │ ┌──────────────────┐│  push    │   cicd-app:latest│
-│  + Docker Engine   │────▶│ │ 1. validate       ││  image   │                  │
-│                    │      │ │ 2. test (pytest)  ││─────────▶│                  │
-│  Flask App :5000   │      │ │ 3. build & push   ││          │                  │
-└──────────────────┘      │ └──────────────────┘│          └──────────────────┘
-                            └─────────────────────┘
+### CI/CD Workflow
+
+```text
+Developer
+    │
+    ▼
+GitHub Repository
+    │
+    ▼
+GitHub Actions
+ ├── Black
+ ├── Flake8
+ ├── Trivy Security Scan
+ ├── Pytest
+ └── Docker Build
+    │
+    ▼
+Docker Image Validation
 ```
 
-The Vagrant box mirrors a clean Debian server with Docker pre-installed, so the app can be built and run identically on a laptop or a VPS. Every push to `main` then triggers the same build inside GitHub Actions, runs the test suite, and — on success — publishes the image to Docker Hub.
+### Architecture Diagram
+
+![Architecture Diagram](screenshots/architecture-diagram.png)
 
 ---
 
 ## ✨ Features
 
-- 🐍 Minimal Flask web app with a single health-check style route
-- 🧪 Automated unit testing with `pytest` and Flask's test client
-- 🐳 Multi-stage `Dockerfile` — slim runtime image, non-root user, served via `gunicorn`
-- 📦 Reproducible dev environment via `Vagrant` + VirtualBox (Debian 12 "bookworm")
-- ⚙️ 3-stage GitHub Actions pipeline: **validate → test → build & push**
-- 🔐 Docker Hub credentials handled securely via GitHub Actions secrets
-- 🖼️ Screenshots documenting each stage of the workflow
+- Flask REST-style application
+- Health endpoint (`/health`)
+- Version endpoint (`/version`)
+- Automated unit testing with Pytest
+- Black code formatting validation
+- Flake8 static code analysis
+- Trivy security scanning
+- Multi-stage Docker image build
+- Non-root container security model
+- Docker HEALTHCHECK monitoring
+- GitHub Actions CI pipeline
+- Vagrant-based development environment
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Technology Stack
 
-| Layer              | Tool / Technology              |
-|--------------------|---------------------------------|
-| Application         | Python 3.10, Flask              |
-| WSGI Server          | Gunicorn                        |
-| Testing              | Pytest                          |
-| Containerization     | Docker (multi-stage build)      |
-| Local Infrastructure | Vagrant + VirtualBox (Debian 12)|
-| CI/CD                | GitHub Actions                  |
-| Image Registry       | Docker Hub                      |
+| Category | Technology |
+|-----------|------------|
+| Language | Python 3.11 |
+| Framework | Flask |
+| Testing | Pytest |
+| Formatting | Black |
+| Linting | Flake8 |
+| Security Scanning | Trivy |
+| Containerization | Docker |
+| CI/CD | GitHub Actions |
+| Infrastructure | Vagrant + VirtualBox |
+| Web Server | Gunicorn |
 
 ---
 
-## 📂 Project Structure
+## 📂 Repository Structure
 
-```
+```text
 cicd-docker-deployment/
 ├── .github/workflows/
-│   └── ci.yml              # CI/CD pipeline: validate, test, build & push
+│   └── ci.yml
 ├── app/
-│   ├── __init__.py
-│   └── app.py               # Flask application
 ├── docker/
-│   └── Dockerfile           # Multi-stage build, non-root user, gunicorn
 ├── tests/
-│   ├── __init__.py
-│   └── test_app.py          # Pytest test suite
-├── screenshots/             # Workflow screenshots
-├── requirements.txt         # flask, gunicorn, pytest
-├── Vagrantfile               # Debian 12 VM with Docker pre-installed
+├── docs/
+│   ├── architecture.md
+│   ├── interview-questions.md
+│   └── troubleshooting.md
+├── screenshots/
+├── requirements.txt
+├── Vagrantfile
 └── README.md
 ```
 
 ---
 
-## ⚙️ Getting Started
+## ⚙️ Local Development
 
-### Prerequisites
-- [Vagrant](https://www.vagrantup.com/) + [VirtualBox](https://www.virtualbox.org/) (for the local VM workflow)
-- Docker (installed automatically inside the VM, or locally on your machine)
-- Python 3.10+
+### Start Vagrant Environment
 
-### 1. Spin up the VM (optional, mirrors a clean server)
 ```bash
 vagrant up
 vagrant ssh
 cd /home/vagrant/cicd-project
 ```
 
-### 2. Run tests locally
+### Create Virtual Environment
+
 ```bash
 python3 -m venv venv
 source venv/bin/activate
+pip install --upgrade pip
 pip install -r requirements.txt
+```
+
+### Run Tests
+
+```bash
 pytest -v
 ```
 
-### 3. Build and run with Docker
+### Validate Code Quality
+
 ```bash
-docker build -t cicd-app -f docker/Dockerfile .
-docker run -d -p 5000:5000 cicd-app
-```
-
-Visit **http://localhost:5000** (or **http://192.168.56.10:5000** if running inside the Vagrant VM) — you should see:
-
-```
-CI/CD Pipeline Working 🚀
+black --check app tests
+flake8 app tests
 ```
 
 ---
 
-## 🔄 CI/CD Pipeline
+## 🐳 Docker Usage
 
-Defined in [`.github/workflows/ci.yml`](.github/workflows/ci.yml), the pipeline runs on every push or pull request to `main`:
+### Build Image
 
-| Stage      | What it does                                                            |
-|------------|---------------------------------------------------------------------------|
-| **validate** | Checks out the code and confirms the Dockerfile exists                |
-| **test**     | Sets up Python, installs dependencies in a virtualenv, runs `pytest`   |
-| **build**    | Logs in to Docker Hub and builds + pushes `cicd-app:latest` (depends on `test` passing) |
+```bash
+docker build -t cicd-app:v1 -f docker/Dockerfile .
+```
 
-Docker Hub credentials are read from the `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` repository secrets — no credentials are stored in the codebase.
+### Run Container
+
+```bash
+docker run -d --name cicd-app -p 5000:5000 cicd-app:v1
+```
+
+### Verify Application
+
+```bash
+curl http://localhost:5000
+curl http://localhost:5000/health
+curl http://localhost:5000/version
+```
+
+---
+
+## 🔄 GitHub Actions Pipeline
+
+The pipeline executes automatically on pushes and pull requests.
+
+### Stages
+
+1. Lint
+   - Black
+   - Flake8
+
+2. Security Scan
+   - Trivy Filesystem Scan
+
+3. Test
+   - Pytest
+
+4. Docker Build
+   - Multi-stage Docker Build Validation
+
+Pipeline Flow:
+
+```text
+Lint
+ ↓
+Security Scan
+ ↓
+Test
+ ↓
+Docker Build
+```
+
+---
+
+## 🔐 Security Controls
+
+- Trivy vulnerability scanning
+- Non-root Docker container
+- Multi-stage Docker build
+- Minimal runtime image
+- Automated CI validation
+
+---
+
+## 📚 Documentation
+
+Additional project documentation:
+
+- docs/architecture.md
+- docs/interview-questions.md
+- docs/troubleshooting.md
 
 ---
 
 ## 🖼️ Screenshots
 
-| | |
-|---|---|
-| VM provisioned (`vagrant up`) | SSH into VM |
-| ![vm up](screenshots/vm-up.png) | ![vm ssh](screenshots/vm-ssh.png) |
-| Docker installed in VM | Docker image build |
-| ![docker install](screenshots/docker-install.png) | ![docker build](screenshots/docker-build.png) |
-| Container running | Tests passing |
-| ![docker run](screenshots/docker-run.png) | ![tests pass](screenshots/tests-pass.png) |
-| App in browser | |
-| ![app browser](screenshots/app-browser.png) | |
+- Vagrant VM Provisioning
+- Docker Installation
+- Docker Image Build
+- Container Execution
+- Application Validation
+- Automated Testing
+- Architecture Diagram
 
 ---
 
-## 🧭 Possible Next Steps
+## 🎯 DevOps Concepts Demonstrated
 
-- Add a `/health` endpoint and container `HEALTHCHECK`
-- Tag images with the Git commit SHA in addition to `latest`
-- Add a deploy stage (e.g. to a VPS or Kubernetes) after the image is pushed
-- Add `flake8`/`black` to the validate stage for real linting
+- Continuous Integration (CI)
+- DevSecOps
+- Infrastructure Reproducibility
+- Automated Testing
+- Static Code Analysis
+- Containerization
+- Security Scanning
+- Production Container Practices
 
 ---
 
 ## 👤 Author
 
-**Muhammad Kamran Kabeer**
-IT Lab Manager · DevOps Engineer · Lecturer
+Muhammad Kamran Kabeer
 
-<p>
-  <a href="https://www.devriston.com.pk"><img src="https://img.shields.io/badge/Website-devriston.com.pk-0A66C2?style=for-the-badge" alt="Website"></a>
-  <a href="https://www.linkedin.com/in/kamrankabeer/"><img src="https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"></a>
-  <a href="https://github.com/muhammadkamrankabeer-oss"><img src="https://img.shields.io/badge/GitHub-Follow-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub"></a>
-</p>
+DevOps Engineer | IT Lab Manager | Technical Trainer
+
+GitHub: https://github.com/muhammadkamrankabeer-oss
