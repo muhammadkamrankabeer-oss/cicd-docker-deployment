@@ -1,10 +1,27 @@
-from flask import Flask
+from flask import Flask, jsonify
 
 app = Flask(__name__)
 
+
 @app.route("/")
 def home():
-    return "CI/CD Pipeline Working 🚀"
+    return jsonify(
+        {
+            "application": "CI/CD Docker Deployment Platform",
+            "status": "running",
+        }
+    )
+
+
+@app.route("/health")
+def health():
+    return jsonify({"status": "healthy"})
+
+
+@app.route("/version")
+def version():
+    return jsonify({"version": "1.0.0"})
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
